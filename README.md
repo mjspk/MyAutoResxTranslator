@@ -14,6 +14,10 @@ This tool is designed to streamline the localization process of .NET application
 *   **Bulk Translation**: Translate a single `.resx` file into multiple languages at once.
 *   **User-Friendly Interface**: A simple and intuitive GUI for easy operation.
 
+## Note on Antivirus False Positives
+
+**Important:** Executable files created from Python scripts, like this one, are sometimes flagged as viruses by antivirus software (a "false positive"). This is a known issue with the tools used to package Python applications for Windows. The application is safe to use. If your antivirus prevents you from downloading or running the application, you may need to temporarily disable it or add an exception for `MyAutoResxTranslator.exe`.
+
 ## Installation & Usage
 
 There are two ways to use this application:

@@ -26,11 +26,12 @@ jobs:
 
     - name: Build executable
       run: |
-        pyinstaller --noconfirm --windowed --name MyAutoResxTranslator app.py
+        python setup.py build
 
     - name: Package executable
       run: |
-        Compress-Archive -Path dist/MyAutoResxTranslator -DestinationPath MyAutoResxTranslator-windows.zip
+        $BUILD_DIR = (Get-ChildItem -Path build/exe.*).FullName
+        Compress-Archive -Path "$BUILD_DIR/*" -DestinationPath MyAutoResxTranslator-windows.zip
 
     - name: Create Release and Upload Asset
       uses: softprops/action-gh-release@v1

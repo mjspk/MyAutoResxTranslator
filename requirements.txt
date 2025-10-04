@@ -1,2 +1,2 @@
 deepl
-pyinstaller
+cx_Freeze
