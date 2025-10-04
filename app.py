@@ -1,13 +1,3 @@
-"""
-AutoResxTranslator — protected words + RTL-safe restoration (full app)
-
-Key fixes:
- - Protected words replaced with self-closing XML tags <kw id="i"/> prior to translation
- - Strings containing placeholders or protected words use DeepL tag_handling="xml"
- - On restore, protected words are inserted back and wrapped with LRM (U+200E) if target is RTL
- - Keeps glossary, placeholders, preview dialog, thread-safety, chunking, retries, settings persistence
-"""
-
 import os
 import re
 import json
@@ -242,7 +232,7 @@ def detect_existing_culture_codes(base_path):
 class AutoResxTranslatorApp:
     def __init__(self, root):
         self.root = root
-        root.title("AutoResxTranslator — protected words & RTL fix")
+        root.title("AutoResxTranslator")
         root.geometry("980x760")
         self.settings = load_settings()
 
