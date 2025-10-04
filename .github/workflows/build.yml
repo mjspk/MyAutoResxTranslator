@@ -26,11 +26,11 @@ jobs:
 
     - name: Build executable
       run: |
-        pyinstaller --onefile --windowed --name MyAutoResxTranslator app.py
+        pyinstaller --noconfirm --windowed --name MyAutoResxTranslator app.py
 
     - name: Package executable
       run: |
-        Compress-Archive -Path dist/MyAutoResxTranslator.exe -DestinationPath MyAutoResxTranslator-windows.zip
+        Compress-Archive -Path dist/MyAutoResxTranslator -DestinationPath MyAutoResxTranslator-windows.zip
 
     - name: Create Release and Upload Asset
       uses: softprops/action-gh-release@v1

@@ -44,7 +44,8 @@ If you prefer not to run the application from the source, you can download a pre
 
 1.  Go to the [**Releases**](https://github.com/your-username/MyAutoResxTranslator/releases) page of this repository.
 2.  Download the latest `MyAutoResxTranslator-windows.zip` file.
-3.  Unzip the file and run the `MyAutoResxTranslator.exe` executable.
+3.  Unzip the file. This will create a folder named `MyAutoResxTranslator`.
+4.  Open the `MyAutoResxTranslator` folder and run the `MyAutoResxTranslator.exe` executable.
 
 After starting the application, follow these steps:
 
