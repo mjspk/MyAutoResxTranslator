@@ -205,14 +205,47 @@ class PreviewDialog(simpledialog.Dialog):
         self.result = [e.get() for e in self.edit_entries]
 
 # ---------- Locale detection utility ----------
+def extract_base_name_and_culture(file_path):
+    """
+    Extract the true base name and culture code from a .resx file.
+    Examples:
+      SharedResource.resx -> (SharedResource, None)
+      SharedResource.en.resx -> (SharedResource, en)
+      Strings.es-ES.resx -> (Strings, es-ES)
+    """
+    p = Path(file_path)
+    name = p.name
+    if not name.lower().endswith(".resx"):
+        return name, None
+    
+    stem = name[:-5]  # remove .resx
+    parts = stem.split(".")
+    
+    if len(parts) == 1:
+        # No culture code, e.g., SharedResource.resx
+        return stem, None
+    
+    # Check if last part looks like a culture code (2-5 chars, possibly with dash)
+    last_part = parts[-1]
+    if len(last_part) >= 2 and len(last_part) <= 5 and (last_part.replace("-", "").isalnum()):
+        # Likely a culture code
+        base_name = ".".join(parts[:-1])
+        return base_name, last_part
+    
+    # No culture code detected
+    return stem, None
+
 def detect_existing_culture_codes(base_path):
+    """
+    Detect existing localized .resx files in the same directory.
+    Returns a set of culture codes found.
+    """
     p = Path(base_path)
     directory = p.parent
-    base_name = p.name
-    if base_name.lower().endswith(".resx"):
-        stem = base_name[:-5]
-    else:
-        stem = base_name
+    
+    # Get the true base name (without culture code)
+    true_base, base_culture = extract_base_name_and_culture(base_path)
+    
     found = set()
     for f in directory.iterdir():
         if not f.is_file():
@@ -220,12 +253,14 @@ def detect_existing_culture_codes(base_path):
         name = f.name
         if not name.lower().endswith(".resx"):
             continue
-        if name == base_name:
+        if name == p.name:
             continue
-        if name.startswith(stem + ".") and len(name) > len(stem) + 5:
-            code_part = name[len(stem)+1:-5]
-            if code_part:
-                found.add(code_part.lower())
+        
+        # Check if this file matches our base name pattern
+        file_base, file_culture = extract_base_name_and_culture(f)
+        if file_base == true_base and file_culture:
+            found.add(file_culture.lower())
+    
     return found
 
 # ---------- Main App ----------
@@ -751,13 +786,14 @@ class AutoResxTranslatorApp:
                 for i, (_, val_el, _) in enumerate(items_out):
                     val_el.text = edited[i]
 
-                base_name = Path(base_path).name
-                stem = base_name[:-5] if base_name.lower().endswith(".resx") else base_name
+                # Get the true base name (without any existing culture code)
+                true_base, _ = extract_base_name_and_culture(base_path)
+                
                 if self.filename_style_var.get() == 0:
                     short = target.split("-")[0].lower()
-                    out_name = f"{stem}.{short}.resx"
+                    out_name = f"{true_base}.{short}.resx"
                 else:
-                    out_name = f"{stem}.{target.lower()}.resx"
+                    out_name = f"{true_base}.{target.lower()}.resx"
                 out_path = Path(base_path).parent / out_name
                 try:
                     write_resx(tree_out, out_path)
